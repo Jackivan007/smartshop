@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">Crear cuenta</h1>
+
+		{# Mostrar error específico del campo email (ej. ya registrado) #}
+		{% if registrationForm.email.vars.errors|length > 0 %}
+			{% for error in registrationForm.email.vars.errors %}
+				<div class="alert-danger">{{ error.message }}</div>
+			{% endfor %}
+		{% endif %}
+
+		{{ form_start(registrationForm) }}
+		<div class="form-group">
+			{{ form_row(registrationForm.nombre) }}
+		</div>
+		<div class="form-group">
+			{{ form_row(registrationForm.apellidos) }}
+		</div>
+		<div class="form-group">
+			{{ form_row(registrationForm.username) }}
+		</div>
+		<div
+			class="form-group">
+			{# Mostramos solo el campo y etiqueta, no el error aquí #}
+			{{ form_label(registrationForm.email) }}
+			{{ form_widget(registrationForm.email) }}
+		</div>
+		<div class="form-group">
+			{{ form_row(registrationForm.plainPassword.first, {
+                label: 'Contraseña'
+            }) }}
+			{{ form_row(registrationForm.plainPassword.second, {
+                label: 'Repite la contraseña'
+            }) }}
+		</div>
+		<div class="form-group checkbox">
+			{{ form_widget(registrationForm.agreeTerms) }}
+			{{ form_label(registrationForm.agreeTerms) }}
+			{{ form_errors(registrationForm.agreeTerms) }}
+		</div>
+
+		<button type="submit" class="btn">Registrarse</button>
+		{{ form_end(registrationForm) }}
+
+		<p class="login-link">
+			¿Ya tienes cuenta?
+			<a href="{{ path('app_login') }}">Inicia sesión</a>
+		</p>
+	</div>
+{% endblock %}

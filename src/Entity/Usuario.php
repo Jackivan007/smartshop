@@ -6,9 +6,13 @@ use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
-class Usuario
+#[UniqueEntity(fields: ['email'], message: 'Ya existe una cuenta con este correo electrónico')]
+class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,13 +25,13 @@ class Usuario
     #[ORM\Column(length: 100)]
     private ?string $apellidos = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, unique: true)]
     private ?string $username = null;
 
     #[ORM\Column]
@@ -156,7 +160,6 @@ class Usuario
     public function removeGrupo(Grupo $grupo): static
     {
         if ($this->grupos->removeElement($grupo)) {
-            // set the owning side to null (unless already changed)
             if ($grupo->getCreadoPor() === $this) {
                 $grupo->setCreadoPor(null);
             }
@@ -186,7 +189,6 @@ class Usuario
     public function removeLista(Lista $lista): static
     {
         if ($this->listas->removeElement($lista)) {
-            // set the owning side to null (unless already changed)
             if ($lista->getUsuario() === $this) {
                 $lista->setUsuario(null);
             }
@@ -216,7 +218,6 @@ class Usuario
     public function removeNotificacione(Notificacion $notificacione): static
     {
         if ($this->notificaciones->removeElement($notificacione)) {
-            // set the owning side to null (unless already changed)
             if ($notificacione->getUsuario() === $this) {
                 $notificacione->setUsuario(null);
             }
@@ -224,4 +225,21 @@ class Usuario
 
         return $this;
     }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function setRoles(array $roles): static
+    {
+        return $this;
+    }
+
+    public function eraseCredentials(): void {}
 }

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio de sesión
+{% endblock %}
+
+{% block body %}
+	<div class="login-container">
+		<h1>Iniciar sesión</h1>
+
+		{% if error %}
+			<div class="alert alert-danger">
+				Correo electrónico o contraseña incorrectos.
+			</div>
+		{% endif %}
+
+
+		<form method="post">
+			<label for="inputEmail">Correo electrónico</label>
+			<input type="email" value="{{ last_username }}" name="email" id="inputEmail" required autofocus>
+
+			<label for="inputPassword">Contraseña</label>
+			<input type="password" name="password" id="inputPassword" required>
+
+			<div class="checkbox">
+				<input type="checkbox" name="_remember_me" id="remember_me">
+				<label for="remember_me">Recuérdame</label>
+			</div>
+
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+			<button class="btn" type="submit">Iniciar sesión</button>
+
+			<div class="register-link">
+				¿No tienes cuenta?
+				<a href="{{ path('app_register') }}">Regístrate aquí</a>
+			</div>
+		</form>
+	</div>
+{% endblock %}
