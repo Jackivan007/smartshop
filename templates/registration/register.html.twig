@@ -14,6 +14,14 @@
 			{% endfor %}
 		{% endif %}
 
+		{# Mostrar error específico del campo username (ej. ya en uso) #}
+		{% if registrationForm.username.vars.errors|length > 0 %}
+			{% for error in registrationForm.username.vars.errors %}
+				<div class="alert-danger">{{ error.message }}</div>
+			{% endfor %}
+		{% endif %}
+
+
 		{{ form_start(registrationForm) }}
 		<div class="form-group">
 			{{ form_row(registrationForm.nombre) }}
@@ -22,7 +30,8 @@
 			{{ form_row(registrationForm.apellidos) }}
 		</div>
 		<div class="form-group">
-			{{ form_row(registrationForm.username) }}
+			{{ form_label(registrationForm.username) }}
+			{{ form_widget(registrationForm.username) }}
 		</div>
 		<div
 			class="form-group">

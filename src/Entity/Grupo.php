@@ -6,6 +6,7 @@ use App\Repository\GrupoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Usuario;
 
 #[ORM\Entity(repositoryClass: GrupoRepository::class)]
 class Grupo
@@ -24,16 +25,22 @@ class Grupo
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var Collection<int, Lista>
-     */
+    #[ORM\Column(length: 20, unique: true)]
+    private ?string $clave = null;
+
     #[ORM\OneToMany(targetEntity: Lista::class, mappedBy: 'grupo')]
     private Collection $listas;
+
+    #[ORM\ManyToMany(targetEntity: Usuario::class, inversedBy: 'gruposUnidos')]
+    private Collection $miembros;
 
     public function __construct()
     {
         $this->listas = new ArrayCollection();
+        $this->miembros = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
+
 
     public function getId(): ?int
     {
@@ -76,6 +83,18 @@ class Grupo
         return $this;
     }
 
+    public function getClave(): ?string
+    {
+        return $this->clave;
+    }
+
+    public function setClave(string $clave): static
+    {
+        $this->clave = $clave;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Lista>
      */
@@ -97,11 +116,34 @@ class Grupo
     public function removeLista(Lista $lista): static
     {
         if ($this->listas->removeElement($lista)) {
-            // set the owning side to null (unless already changed)
             if ($lista->getGrupo() === $this) {
                 $lista->setGrupo(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Usuario>
+     */
+    public function getMiembros(): Collection
+    {
+        return $this->miembros;
+    }
+
+    public function addMiembro(Usuario $usuario): static
+    {
+        if (!$this->miembros->contains($usuario)) {
+            $this->miembros->add($usuario);
+        }
+
+        return $this;
+    }
+
+    public function removeMiembro(Usuario $usuario): static
+    {
+        $this->miembros->removeElement($usuario);
 
         return $this;
     }

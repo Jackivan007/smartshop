@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar grupo
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">Editar grupo</h1>
+
+		{{ form_start(grupoForm) }}
+		<div class="form-group">
+			{{ form_row(grupoForm.nombre) }}
+		</div>
+		<button class="btn">Guardar cambios</button>
+		{{ form_end(grupoForm) }}
+
+		<div class="login-link" style="margin-top: 1rem;">
+			<a href="{{ path('app_grupos') }}">← Volver a mis grupos</a>
+		</div>
+	</div>
+{% endblock %}

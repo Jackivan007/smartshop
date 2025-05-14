@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Unirse a un grupo
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">Unirse a un grupo</h1>
+
+		{# Mostrar mensajes de error aquí dentro del form-container #}
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger" style="margin-top: 20px; padding: 1rem;">{{ message }}</div>
+		{% endfor %}
+
+		{{ form_start(form) }}
+
+		<div class="form-group">
+			{{ form_label(form.clave) }}
+			{{ form_widget(form.clave) }}
+			{{ form_errors(form.clave) }}
+		</div>
+
+		<button class="btn">Unirse</button>
+
+		{{ form_end(form) }}
+
+		<div class="login-link" style="margin-top: 1rem;">
+			<a href="{{ path('app_grupos') }}">← Volver a mis grupos</a>
+		</div>
+	</div>
+{% endblock %}

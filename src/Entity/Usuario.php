@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Ya existe una cuenta con este correo electrónico')]
+#[UniqueEntity(fields: ['username'], message: 'Ya existe una cuenta con este nombre de usuario')]
 class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -37,29 +38,24 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var Collection<int, Grupo>
-     */
     #[ORM\OneToMany(targetEntity: Grupo::class, mappedBy: 'creadoPor')]
     private Collection $grupos;
 
-    /**
-     * @var Collection<int, Lista>
-     */
     #[ORM\OneToMany(targetEntity: Lista::class, mappedBy: 'usuario')]
     private Collection $listas;
 
-    /**
-     * @var Collection<int, Notificacion>
-     */
     #[ORM\OneToMany(targetEntity: Notificacion::class, mappedBy: 'usuario')]
     private Collection $notificaciones;
+
+    #[ORM\ManyToMany(targetEntity: Grupo::class, mappedBy: 'miembros')]
+    private Collection $gruposUnidos;
 
     public function __construct()
     {
         $this->grupos = new ArrayCollection();
         $this->listas = new ArrayCollection();
         $this->notificaciones = new ArrayCollection();
+        $this->gruposUnidos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,7 +71,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
-
         return $this;
     }
 
@@ -87,7 +82,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setApellidos(string $apellidos): static
     {
         $this->apellidos = $apellidos;
-
         return $this;
     }
 
@@ -99,7 +93,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -111,7 +104,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -123,7 +115,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
-
         return $this;
     }
 
@@ -135,7 +126,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -166,6 +156,14 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Grupo>
+     */
+    public function getGruposUnidos(): Collection
+    {
+        return $this->gruposUnidos;
     }
 
     /**

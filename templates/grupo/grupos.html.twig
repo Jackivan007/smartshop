@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mis grupos
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">Mis grupos</h1>
+
+		<div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+			<a href="{{ path('app_grupo_crear') }}" class="btn">Crear grupo</a>
+			<a href="{{ path('app_grupo_unirse') }}" class="btn-secondary">Unirse a grupo</a>
+		</div>
+
+		<h2>Grupos que has creado</h2>
+		{% if gruposCreados is empty %}
+			<p>No has creado ningún grupo aún.</p>
+		{% else %}
+			<div class="grupo-grid">
+				{% for grupo in gruposCreados %}
+					<div class="grupo-card">
+						<div style="display: flex; justify-content: space-between; align-items: center;">
+							<strong>{{ grupo.nombre }}</strong>
+							<div style="display: flex; gap: 0.5rem;">
+								<a href="{{ path('app_grupo_editar', { id: grupo.id }) }}" class="btn btn-editar">Editar</a>
+								<form method="post" action="{{ path('app_grupo_eliminar', { id: grupo.id }) }}" onsubmit="return confirm('¿Seguro que quieres eliminar este grupo?');">
+									<input type="hidden" name="_token" value="{{ csrf_token('eliminar_grupo_' ~ grupo.id) }}">
+									<button class="btn btn-eliminar">Eliminar</button>
+								</form>
+							</div>
+						</div>
+						<span>Creado el
+							{{ grupo.createdAt|date('d/m/Y') }}</span>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		<h2 style="margin-top: 2rem;">Grupos a los que te has unido</h2>
+		{% if gruposUnido is empty %}
+			<p>No te has unido a ningún grupo aún.</p>
+		{% else %}
+			<div class="grupo-grid">
+				{% for grupo in gruposUnido %}
+					<div class="grupo-card">
+						<div style="display: flex; justify-content: space-between; align-items: center;">
+							<strong>{{ grupo.nombre }}</strong>
+							<form method="post" action="{{ path('app_grupo_abandonar', { id: grupo.id }) }}" onsubmit="return confirm('¿Seguro que quieres abandonar este grupo?');">
+								<input type="hidden" name="_token" value="{{ csrf_token('abandonar_grupo_' ~ grupo.id) }}">
+								<button class="btn btn-eliminar">Abandonar grupo</button>
+							</form>
+						</div>
+						<span>Creado por
+							{{ grupo.creadoPor.nombre }}</span>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

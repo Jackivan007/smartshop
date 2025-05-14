@@ -2,19 +2,41 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>
 			{% block title %}SmartShop
 			{% endblock %}
 		</title>
-		<link
-		rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-
+		<link rel="icon" href="{{ asset('images/logo.png') }}">
 		{{ encore_entry_link_tags('app') }}
 
 		{% block stylesheets %}{% endblock %}
 	</head>
 	<body>
-		{% block body %}{% endblock %}
+
+		{% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}
+			<header class="app-header">
+				<div class="logo">
+					<a href="{{ path('app_grupos') }}">
+						<img src="{{ asset('images/logo.png') }}" alt="Logo SmartShop" class="logo-img">
+					</a>
+				</div>
+				<div class="header-buttons">
+					<a href="#">
+						<img src="{{ asset('images/usuario.png') }}" alt="Perfil" class="icon">
+					</a>
+					<a href="{{ path('app_logout') }}">
+						<img src="{{ asset('images/logout.png') }}" alt="Cerrar sesión" class="icon">
+					</a>
+				</div>
+			</header>
+		{% endif %}
+
+		<div
+			style="padding-top: 70px;">
+			<!-- Espacio para que no se solape la cabecera -->
+			{% block body %}{% endblock %}
+		</div>
 
 		{% block javascripts %}
 			{% block importmap %}
