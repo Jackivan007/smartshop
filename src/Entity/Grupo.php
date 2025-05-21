@@ -20,6 +20,7 @@ class Grupo
     private ?string $nombre = null;
 
     #[ORM\ManyToOne(inversedBy: 'grupos')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')] // Elimina el grupo si el usuario que lo creó es eliminado
     private ?Usuario $creadoPor = null;
 
     #[ORM\Column]
@@ -28,7 +29,12 @@ class Grupo
     #[ORM\Column(length: 20, unique: true)]
     private ?string $clave = null;
 
-    #[ORM\OneToMany(targetEntity: Lista::class, mappedBy: 'grupo')]
+    #[ORM\OneToMany(
+        targetEntity: Lista::class,
+        mappedBy: 'grupo',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     private Collection $listas;
 
     #[ORM\ManyToMany(targetEntity: Usuario::class, inversedBy: 'gruposUnidos')]
@@ -40,7 +46,6 @@ class Grupo
         $this->miembros = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
-
 
     public function getId(): ?int
     {
@@ -55,7 +60,6 @@ class Grupo
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
-
         return $this;
     }
 
@@ -67,7 +71,6 @@ class Grupo
     public function setCreadoPor(?Usuario $creadoPor): static
     {
         $this->creadoPor = $creadoPor;
-
         return $this;
     }
 
@@ -79,7 +82,6 @@ class Grupo
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -91,7 +93,6 @@ class Grupo
     public function setClave(string $clave): static
     {
         $this->clave = $clave;
-
         return $this;
     }
 
@@ -144,7 +145,6 @@ class Grupo
     public function removeMiembro(Usuario $usuario): static
     {
         $this->miembros->removeElement($usuario);
-
         return $this;
     }
 }

@@ -27,7 +27,7 @@ class Producto
     private ?string $nota = null;
 
     #[ORM\ManyToOne(inversedBy: 'productos')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Lista $lista = null;
 
     #[ORM\ManyToOne]
@@ -47,7 +47,6 @@ class Producto
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
-
         return $this;
     }
 
@@ -59,7 +58,6 @@ class Producto
     public function setCantidad(int $cantidad): static
     {
         $this->cantidad = $cantidad;
-
         return $this;
     }
 
@@ -71,7 +69,6 @@ class Producto
     public function setComprado(bool $comprado): static
     {
         $this->comprado = $comprado;
-
         return $this;
     }
 
@@ -83,7 +80,6 @@ class Producto
     public function setNota(?string $nota): static
     {
         $this->nota = $nota;
-
         return $this;
     }
 
@@ -95,7 +91,6 @@ class Producto
     public function setLista(?Lista $lista): static
     {
         $this->lista = $lista;
-
         return $this;
     }
 
@@ -107,7 +102,6 @@ class Producto
     public function setCategoria(?Categoria $categoria): static
     {
         $this->categoria = $categoria;
-
         return $this;
     }
 }

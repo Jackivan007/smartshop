@@ -23,7 +23,7 @@ class Notificacion
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'notificaciones')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Usuario $usuario = null;
 
     public function getId(): ?int
@@ -39,7 +39,6 @@ class Notificacion
     public function setMensaje(string $mensaje): static
     {
         $this->mensaje = $mensaje;
-
         return $this;
     }
 
@@ -51,7 +50,6 @@ class Notificacion
     public function setLeida(bool $leida): static
     {
         $this->leida = $leida;
-
         return $this;
     }
 
@@ -63,7 +61,6 @@ class Notificacion
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -75,7 +72,6 @@ class Notificacion
     public function setUsuario(?Usuario $usuario): static
     {
         $this->usuario = $usuario;
-
         return $this;
     }
 }

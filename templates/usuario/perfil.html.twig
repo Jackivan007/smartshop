@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mi perfil
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">Mi perfil</h1>
+
+		{# Mensajes flash #}
+		{% for msg in app.flashes('success') %}
+			<div class="alert-success">{{ msg }}</div>
+		{% endfor %}
+		{% for msg in app.flashes('error') %}
+			<div class="alert-danger">{{ msg }}</div>
+		{% endfor %}
+
+		<div
+			class="perfil-columns">
+			{# Sección edición de perfil #}
+			<div class="perfil-section">
+				{% for error in formEditar.vars.errors %}
+					<div class="alert-danger">{{ error.message }}</div>
+				{% endfor %}
+
+				{{ form_start(formEditar) }}
+				<div class="form-group">{{ form_row(formEditar.nombre) }}</div>
+				<div class="form-group">{{ form_row(formEditar.apellidos) }}</div>
+				<div class="form-group">{{ form_row(formEditar.username) }}</div>
+				<div class="form-group">{{ form_row(formEditar.email) }}</div>
+				<button class="btn">Modificar perfil</button>
+				{{ form_end(formEditar) }}
+			</div>
+
+			{# Sección cambiar contraseña #}
+			<div class="perfil-section">
+				<h2 class="section-title">Cambiar contraseña</h2>
+
+				{% for error in formPassword.vars.errors %}
+					<div class="alert-danger">{{ error.message }}</div>
+				{% endfor %}
+
+				{{ form_start(formPassword) }}
+				<div class="form-group">{{ form_row(formPassword.currentPassword, { label: 'Contraseña actual' }) }}</div>
+				<div class="form-group">{{ form_row(formPassword.newPassword, { label: 'Nueva contraseña' }) }}</div>
+				<button class="btn-secondary">Actualizar contraseña</button>
+				{{ form_end(formPassword) }}
+			</div>
+		</div>
+
+		<hr
+		class="form-separator">
+
+		{# Sección eliminar cuenta#}
+		<form method="post" action="{{ path('app_eliminar_cuenta') }}" onsubmit="return confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.');">
+			<input type="hidden" name="_token" value="{{ csrf_token('eliminar_usuario') }}">
+			<button class="btn btn-eliminar full-width">Eliminar cuenta</button>
+		</form>
+	</div>
+{% endblock %}

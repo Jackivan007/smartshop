@@ -8,7 +8,7 @@
 		<h1>Iniciar sesión</h1>
 
 		{% if error %}
-			<div class="alert alert-danger">
+			<div class="alert-danger">
 				Correo electrónico o contraseña incorrectos.
 			</div>
 		{% endif %}
@@ -30,10 +30,10 @@
 
 			<button class="btn" type="submit">Iniciar sesión</button>
 
-			<div class="register-link">
+			<p class="login-link">
 				¿No tienes cuenta?
 				<a href="{{ path('app_register') }}">Regístrate aquí</a>
-			</div>
+			</p>
 		</form>
 	</div>
 {% endblock %}

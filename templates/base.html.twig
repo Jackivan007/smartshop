@@ -21,27 +21,31 @@
 						<img src="{{ asset('images/logo.png') }}" alt="Logo SmartShop" class="logo-img">
 					</a>
 				</div>
+
 				<div class="header-buttons">
-					<a href="#">
+					<a href="{{ path('app_grupos') }}">
+						<img src="{{ asset('images/grupos.png') }}" alt="Grupos" class="icon" title="Grupos">
+					</a>
+					<a href="{{ path('app_perfil') }}">
 						<img src="{{ asset('images/usuario.png') }}" alt="Perfil" class="icon">
 					</a>
-					<a href="{{ path('app_logout') }}">
-						<img src="{{ asset('images/logout.png') }}" alt="Cerrar sesión" class="icon">
-					</a>
+					<form method="post" action="{{ path('app_logout') }}" class="logout-form" onsubmit="return confirm('¿Seguro que quieres cerrar sesión?');">
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+						<button type="submit" class="logout-btn" title="Cerrar sesión">
+							<img src="{{ asset('images/logout.png') }}" alt="Cerrar sesión" class="icon">
+						</button>
+					</form>
 				</div>
 			</header>
 		{% endif %}
 
-		<div
-			style="padding-top: 70px;">
-			<!-- Espacio para que no se solape la cabecera -->
-			{% block body %}{% endblock %}
-		</div>
+		<div class="main-content"> {% block body %}{% endblock %}
+			</div>
 
-		{% block javascripts %}
-			{% block importmap %}
-				{{ importmap('app') }}
+			{% block javascripts %}
+				{% block importmap %}
+					{{ importmap('app') }}
+				{% endblock %}
 			{% endblock %}
-		{% endblock %}
-	</body>
-</html>
+		</body>
+	</html>

@@ -17,13 +17,11 @@ class GrupoController extends AbstractController
     {
         $usuario = $this->getUser();
 
-        // Grupos que ha creado el usuario
         $gruposCreados = $entityManager->getRepository(Grupo::class)->findBy(
             ['creadoPor' => $usuario],
             ['createdAt' => 'DESC']
         );
 
-        // Grupos donde es miembro pero no creador
         $qb = $entityManager->getRepository(Grupo::class)->createQueryBuilder('g');
         $gruposUnido = $qb
             ->join('g.miembros', 'm')
@@ -49,19 +47,15 @@ class GrupoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Generar clave aleatoria única
             do {
                 $clave = strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
                 $claveExiste = $entityManager->getRepository(Grupo::class)->findOneBy(['clave' => $clave]);
             } while ($claveExiste);
 
             $grupo->setClave($clave);
-
-            // Asignar creador y miembro
             $grupo->setCreadoPor($this->getUser());
             $grupo->addMiembro($this->getUser());
 
-            // Guardar en la base de datos
             $entityManager->persist($grupo);
             $entityManager->flush();
 
@@ -86,34 +80,21 @@ class GrupoController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $clave = $form->get('clave')->getData();
-
-            // Buscar el grupo por la clave
             $grupo = $entityManager->getRepository(Grupo::class)->findOneBy(['clave' => $clave]);
 
             if (!$grupo) {
-                // Si el grupo no existe, añadir flash y redirigir
                 $this->addFlash('error', 'Clave incorrecta, intenta de nuevo.');
-                return $this->redirectToRoute('app_grupo_unirse');  // Redirigir al formulario de unirse
+            } elseif ($grupo->getMiembros()->contains($this->getUser())) {
+                $this->addFlash('error', 'Ya formas parte de este grupo.');
             } else {
-                // Verificar si el usuario ya es miembro
-                if ($grupo->getMiembros()->contains($this->getUser())) {
-                    // Si el usuario ya forma parte del grupo, añadir flash y redirigir
-                    $this->addFlash('error', 'Ya formas parte de este grupo.');
-                    return $this->redirectToRoute('app_grupo_unirse');  // Redirigir al formulario de unirse
-                } else {
-                    // Añadir el usuario como miembro
-                    $grupo->addMiembro($this->getUser());
-
-                    // Guardar los cambios en la base de datos
-                    $entityManager->flush();
-
-                    // Redirigir al usuario a la página de grupos
-                    return $this->redirectToRoute('app_grupos');
-                }
+                $grupo->addMiembro($this->getUser());
+                $entityManager->flush();
+                return $this->redirectToRoute('app_grupos');
             }
+
+            return $this->redirectToRoute('app_grupo_unirse');
         }
 
-        // Renderizar la vista para unirse a un grupo
         return $this->render('grupo/unirse.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -148,8 +129,15 @@ class GrupoController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('eliminar_grupo_' . $grupo->getId(), $request->request->get('_token'))) {
+            // Eliminar manualmente a todos los miembros del grupo
+            foreach ($grupo->getMiembros() as $miembro) {
+                $grupo->removeMiembro($miembro);
+            }
+
+            // Doctrine se encargará del resto gracias a las relaciones configuradas
             $entityManager->remove($grupo);
             $entityManager->flush();
+
             $this->addFlash('success', 'Grupo eliminado correctamente.');
         }
 

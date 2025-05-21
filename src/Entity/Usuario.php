@@ -38,13 +38,13 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\OneToMany(targetEntity: Grupo::class, mappedBy: 'creadoPor')]
+    #[ORM\OneToMany(targetEntity: Grupo::class, mappedBy: 'creadoPor', orphanRemoval: true)]
     private Collection $grupos;
 
-    #[ORM\OneToMany(targetEntity: Lista::class, mappedBy: 'usuario')]
+    #[ORM\OneToMany(targetEntity: Lista::class, mappedBy: 'usuario', orphanRemoval: true)]
     private Collection $listas;
 
-    #[ORM\OneToMany(targetEntity: Notificacion::class, mappedBy: 'usuario')]
+    #[ORM\OneToMany(targetEntity: Notificacion::class, mappedBy: 'usuario', orphanRemoval: true)]
     private Collection $notificaciones;
 
     #[ORM\ManyToMany(targetEntity: Grupo::class, mappedBy: 'miembros')]
@@ -159,14 +159,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Grupo>
-     */
-    public function getGruposUnidos(): Collection
-    {
-        return $this->gruposUnidos;
-    }
-
-    /**
      * @return Collection<int, Lista>
      */
     public function getListas(): Collection
@@ -222,6 +214,14 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Grupo>
+     */
+    public function getGruposUnidos(): Collection
+    {
+        return $this->gruposUnidos;
     }
 
     public function getUserIdentifier(): string

@@ -32,7 +32,12 @@ class Lista
     /**
      * @var Collection<int, Producto>
      */
-    #[ORM\OneToMany(targetEntity: Producto::class, mappedBy: 'lista')]
+    #[ORM\OneToMany(
+        targetEntity: Producto::class,
+        mappedBy: 'lista',
+        orphanRemoval: true,
+        cascade: ['remove']
+    )]
     private Collection $productos;
 
     public function __construct()
@@ -53,7 +58,6 @@ class Lista
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
-
         return $this;
     }
 
@@ -65,7 +69,6 @@ class Lista
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -77,7 +80,6 @@ class Lista
     public function setUsuario(?Usuario $usuario): static
     {
         $this->usuario = $usuario;
-
         return $this;
     }
 
@@ -89,7 +91,6 @@ class Lista
     public function setGrupo(?Grupo $grupo): static
     {
         $this->grupo = $grupo;
-
         return $this;
     }
 
@@ -114,7 +115,6 @@ class Lista
     public function removeProducto(Producto $producto): static
     {
         if ($this->productos->removeElement($producto)) {
-            // set the owning side to null (unless already changed)
             if ($producto->getLista() === $this) {
                 $producto->setLista(null);
             }
