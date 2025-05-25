@@ -30,9 +30,23 @@ body {
     box-sizing: border-box;
 }
 
+/*Agrupa logo + saludo */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .logo-img {
     height: 38px;
     object-fit: contain;
+}
+
+/*Saludo al usuario */
+.user-greeting {
+    font-weight: bold;
+    color: #2D2A26;
+    font-size: 0.95rem;
 }
 
 .header-buttons {
@@ -52,12 +66,81 @@ body {
     justify-content: center;
 }
 
-.logout-btn img,
+/* Iconos del header */
+.fa-icon {
+    font-size: 22px;
+    color: #2D2A26;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.fa-icon:hover {
+    color: #00B140;
+}
+
+/* Estilo general para los contenedores de iconos del header */
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 2.9rem;
+}
+
 .header-buttons .icon {
     width: 32px;
     height: 32px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+/* Botones de acción con iconos: editar, eliminar, abandonar */
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+.btn-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Icono lápiz (editar) */
+.btn-icon.editar i {
+    color: #00B140;
+}
+
+/* Icono papelera y abandonar */
+.btn-icon.eliminar i,
+.btn-icon.abandonar i {
+    color: #E25858;
+}
+
+/* Icono copiar */
+.btn-icon.copiar i {
+    color: #2D2A26;
+}
+
+.btn-icon.copiar:hover i {
+    color: #00B140;
+}
+
+.clave-copiable {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* Contenedor de los botones dentro de la tarjeta */
+.card-botones {
+    display: flex;
+    gap: 0.6rem;
 }
 
 /* Containers */
@@ -238,6 +321,36 @@ input:focus {
     color: #046C4E;
 }
 
+.mensaje-copiado {
+    min-width: 100px;
+    min-height: 1rem;
+    font-size: 0.9rem;
+    color: #00B140;
+    font-weight: 500;
+    margin-left: 0.5rem;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -331,6 +444,113 @@ form {
     min-width: 280px;
 }
 
+/* Acciones superiores (crear lista, etc.) */
+.acciones-superiores {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Cabecera de tarjeta */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Botones en tarjeta */
+.card-botones {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Desplegable de miembros */
+.grupo-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.miembros-desplegable {
+    max-width: 300px;
+    width: 100%;
+}
+
+.miembros-summary {
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.miembros-lista {
+    margin-top: 0.5rem;
+    list-style-type: disc;
+    padding-left: 1.2rem;
+}
+
+.miembros-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.miembro-card {
+    background-color: #FDFDFC;
+    border: 1px solid #D3D7D4;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.miembro-card:hover {
+    background-color: #E4ECE7;
+}
+
+.miembro-nombre {
+    font-weight: 500;
+    color: #2D2A26;
+    font-size: 0.95rem;
+}
+
+.btn-mini {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+}
+
+.grupo-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Clave estilo */
+.code-box {
+    display: inline-block;
+    color: #00B140;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+/* Caja que agrupa clave y miembros (en fila) */
+.grupo-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
 
@@ -356,6 +576,15 @@ form {
     .perfil-columns {
         flex-direction: column;
         gap: 2rem;
+    }
+
+    .grupo-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .miembros-desplegable {
+        margin-top: 1rem;
     }
 }
 
@@ -403,7 +632,11 @@ form {
     }
 
     .header-buttons {
-        gap: 0.6rem;
+        gap: 2rem;
         margin-left: auto;
+    }
+
+    .mensaje-copiado {
+        font-size: 0.8rem;
     }
 }

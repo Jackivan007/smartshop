@@ -224,6 +224,25 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->gruposUnidos;
     }
 
+    public function addGruposUnido(Grupo $grupo): static
+    {
+        if (!$this->gruposUnidos->contains($grupo)) {
+            $this->gruposUnidos->add($grupo);
+            $grupo->addMiembro($this); // sincronización bidireccional
+        }
+
+        return $this;
+    }
+
+    public function removeGruposUnido(Grupo $grupo): static
+    {
+        if ($this->gruposUnidos->removeElement($grupo)) {
+            $grupo->removeMiembro($this); // sincronización bidireccional
+        }
+
+        return $this;
+    }
+
     public function getUserIdentifier(): string
     {
         return $this->email;

@@ -7,32 +7,38 @@
 			{% block title %}SmartShop
 			{% endblock %}
 		</title>
-		<link rel="icon" href="{{ asset('images/logo.png') }}">
-		{{ encore_entry_link_tags('app') }}
+		<link
+		rel="icon" href="{{ asset('images/logo.png') }}">
 
+		{# Font Awesome Kit personalizado #}
+		<script src="https://kit.fontawesome.com/59be27e304.js" crossorigin="anonymous"></script>
+
+		{{ encore_entry_link_tags('app') }}
 		{% block stylesheets %}{% endblock %}
 	</head>
 	<body>
 
 		{% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}
 			<header class="app-header">
-				<div class="logo">
+				<div class="logo-section">
 					<a href="{{ path('app_grupos') }}">
 						<img src="{{ asset('images/logo.png') }}" alt="Logo SmartShop" class="logo-img">
 					</a>
+					<span class="user-greeting">Hola,
+						{{ app.user.username }}</span>
 				</div>
 
 				<div class="header-buttons">
-					<a href="{{ path('app_grupos') }}">
-						<img src="{{ asset('images/grupos.png') }}" alt="Grupos" class="icon" title="Grupos">
+					<a href="{{ path('app_grupos') }}" title="Grupos" class="icon-btn">
+						<i class="fa-solid fa-house fa-icon"></i>
 					</a>
-					<a href="{{ path('app_perfil') }}">
-						<img src="{{ asset('images/usuario.png') }}" alt="Perfil" class="icon">
+					<a href="{{ path('app_perfil') }}" title="Perfil" class="icon-btn">
+						<i class="fa-solid fa-user fa-icon"></i>
 					</a>
 					<form method="post" action="{{ path('app_logout') }}" class="logout-form" onsubmit="return confirm('¿Seguro que quieres cerrar sesión?');">
 						<input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
 						<button type="submit" class="logout-btn" title="Cerrar sesión">
-							<img src="{{ asset('images/logout.png') }}" alt="Cerrar sesión" class="icon">
+							<i class="fa-solid fa-right-to-bracket fa-icon"></i>
 						</button>
 					</form>
 				</div>

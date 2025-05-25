@@ -1,31 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mis grupos
+{% block title %}SmartShop
 {% endblock %}
 
 {% block body %}
 	<div class="form-container">
-		<h1 class="form-title">Mis grupos</h1>
+		<h1 class="form-title">SmartShop</h1>
 
-		<div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+		<div class="acciones-superiores">
 			<a href="{{ path('app_grupo_crear') }}" class="btn">Crear grupo</a>
-			<a href="{{ path('app_grupo_unirse') }}" class="btn-secondary">Unirse a grupo</a>
+			<a href="{{ path('app_grupo_unirse') }}" class="btn-secondary">Unirse</a>
 		</div>
 
-		<h2>Grupos que has creado</h2>
-		{% if gruposCreados is empty %}
-			<p>No has creado ningún grupo aún.</p>
+		{% if gruposCreados is empty and gruposUnido is empty %}
+			<p>No perteneces a ningún grupo todavía.</p>
 		{% else %}
-			<div class="grupo-grid">
+			<div
+				class="grupo-grid">
+				{# Primero grupos creados #}
 				{% for grupo in gruposCreados %}
-					<div class="grupo-card">
-						<div style="display: flex; justify-content: space-between; align-items: center;">
+					<div class="grupo-card grupo-card-link" onclick="window.location.href='{{ path('app_listas', { grupoId: grupo.id }) }}'">
+						<div class="card-header">
 							<strong>{{ grupo.nombre }}</strong>
-							<div style="display: flex; gap: 0.5rem;">
-								<a href="{{ path('app_grupo_editar', { id: grupo.id }) }}" class="btn btn-editar">Editar</a>
-								<form method="post" action="{{ path('app_grupo_eliminar', { id: grupo.id }) }}" onsubmit="return confirm('¿Seguro que quieres eliminar este grupo?');">
+							<div class="card-botones">
+								<a href="{{ path('app_grupo_editar', { id: grupo.id }) }}" class="btn-icon editar" onclick="event.stopPropagation();" title="Editar">
+									<i class="fa-solid fa-pen"></i>
+								</a>
+								<form method="post" action="{{ path('app_grupo_eliminar', { id: grupo.id }) }}" onsubmit="event.stopPropagation(); return confirm('¿Seguro que quieres eliminar este grupo?');">
 									<input type="hidden" name="_token" value="{{ csrf_token('eliminar_grupo_' ~ grupo.id) }}">
-									<button class="btn btn-eliminar">Eliminar</button>
+									<button type="submit" class="btn-icon eliminar" title="Eliminar">
+										<i class="fa-solid fa-trash"></i>
+									</button>
 								</form>
 							</div>
 						</div>
@@ -33,21 +38,17 @@
 							{{ grupo.createdAt|date('d/m/Y') }}</span>
 					</div>
 				{% endfor %}
-			</div>
-		{% endif %}
 
-		<h2 style="margin-top: 2rem;">Grupos a los que te has unido</h2>
-		{% if gruposUnido is empty %}
-			<p>No te has unido a ningún grupo aún.</p>
-		{% else %}
-			<div class="grupo-grid">
+				{# Luego grupos unidos #}
 				{% for grupo in gruposUnido %}
-					<div class="grupo-card">
-						<div style="display: flex; justify-content: space-between; align-items: center;">
+					<div class="grupo-card grupo-card-link" onclick="window.location.href='{{ path('app_listas', { grupoId: grupo.id }) }}'">
+						<div class="card-header">
 							<strong>{{ grupo.nombre }}</strong>
-							<form method="post" action="{{ path('app_grupo_abandonar', { id: grupo.id }) }}" onsubmit="return confirm('¿Seguro que quieres abandonar este grupo?');">
+							<form method="post" action="{{ path('app_grupo_abandonar', { id: grupo.id }) }}" onsubmit="event.stopPropagation(); return confirm('¿Seguro que quieres abandonar este grupo?');">
 								<input type="hidden" name="_token" value="{{ csrf_token('abandonar_grupo_' ~ grupo.id) }}">
-								<button class="btn btn-eliminar">Abandonar grupo</button>
+								<button type="submit" class="btn-icon abandonar" title="Abandonar grupo">
+									<i class="fa-solid fa-right-to-bracket"></i>
+								</button>
 							</form>
 						</div>
 						<span>Creado por

@@ -112,7 +112,6 @@ class GrupoController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            $this->addFlash('success', 'Grupo editado correctamente.');
             return $this->redirectToRoute('app_grupos');
         }
 
@@ -137,8 +136,6 @@ class GrupoController extends AbstractController
             // Doctrine se encargará del resto gracias a las relaciones configuradas
             $entityManager->remove($grupo);
             $entityManager->flush();
-
-            $this->addFlash('success', 'Grupo eliminado correctamente.');
         }
 
         return $this->redirectToRoute('app_grupos');
@@ -150,14 +147,12 @@ class GrupoController extends AbstractController
         $usuario = $this->getUser();
 
         if ($grupo->getCreadoPor() === $usuario) {
-            $this->addFlash('error', 'No puedes abandonar un grupo que has creado.');
             return $this->redirectToRoute('app_grupos');
         }
 
         if ($this->isCsrfTokenValid('abandonar_grupo_' . $grupo->getId(), $request->request->get('_token'))) {
             $grupo->removeMiembro($usuario);
             $entityManager->flush();
-            $this->addFlash('success', 'Has abandonado el grupo.');
         }
 
         return $this->redirectToRoute('app_grupos');

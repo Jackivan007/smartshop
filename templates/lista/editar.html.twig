@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar lista
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">Editar lista</h1>
+
+		{{ form_start(listaForm) }}
+		<div class="form-group">
+			{{ form_row(listaForm.nombre) }}
+		</div>
+		<button class="btn">Guardar cambios</button>
+		{{ form_end(listaForm) }}
+
+		<div class="login-link mt-1-5rem">
+			<a href="{{ path('app_listas', { grupoId: lista.grupo.id }) }}">← Volver a las listas del grupo</a>
+		</div>
+	</div>
+{% endblock %}

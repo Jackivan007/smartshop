@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ grupo.nombre }}
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">{{ grupo.nombre }}</h1>
+
+		<div class="grupo-info-row">
+			<div class="clave-copiable">
+				<strong>Clave de acceso:</strong>
+				<span id="claveGrupo" class="code-box">{{ grupo.clave }}</span>
+				<button type="button" class="btn-icon copiar" onclick="copiarClave('{{ grupo.clave }}')">
+					<i class="fa-solid fa-copy"></i>
+				</button>
+				<span id="mensaje-copiado" class="mensaje-copiado">Clave copiada</span>
+			</div>
+
+			<div class="miembros-desplegable">
+				<details>
+					<summary class="miembros-summary">Ver miembros</summary>
+					<div class="miembros-grid">
+						{% for miembro in grupo.miembros %}
+							<div class="miembro-card">
+								<span class="miembro-nombre">{{ miembro.username }}</span>
+								{% if app.user == grupo.creadoPor and miembro != grupo.creadoPor %}
+									<form method="post" action="{{ path('app_grupo_expulsar', { grupoId: grupo.id, userId: miembro.id }) }}" class="expulsar-form" onsubmit="return confirm('¿Expulsar a {{ miembro.username }} del grupo?');">
+										<input type="hidden" name="_token" value="{{ csrf_token('expulsar_' ~ miembro.id) }}">
+										<button type="submit" class="btn-icon eliminar btn-mini" title="Expulsar miembro">
+											<i class="fa-solid fa-user-slash"></i>
+										</button>
+									</form>
+								{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+				</details>
+			</div>
+		</div>
+
+		<div class="acciones-superiores">
+			<a href="{{ path('app_lista_nueva', { grupoId: grupo.id }) }}" class="btn">Crear lista</a>
+		</div>
+
+		{% if listas is empty %}
+			<p>No hay listas en este grupo todavía.</p>
+		{% else %}
+			<div class="grupo-grid">
+				{% for lista in listas %}
+					<div class="grupo-card">
+						<div class="card-header">
+							<strong>{{ lista.nombre }}</strong>
+							<div class="card-botones">
+								<a href="{{ path('app_lista_editar', { id: lista.id }) }}" class="btn-icon editar" onclick="event.stopPropagation();">
+									<i class="fa-solid fa-pen"></i>
+								</a>
+								<form method="post" action="{{ path('app_lista_eliminar', { id: lista.id }) }}" onsubmit="event.stopPropagation(); return confirm('¿Seguro que quieres eliminar esta lista?');">
+									<input type="hidden" name="_token" value="{{ csrf_token('eliminar_lista_' ~ lista.id) }}">
+									<button type="submit" class="btn-icon eliminar">
+										<i class="fa-solid fa-trash"></i>
+									</button>
+								</form>
+							</div>
+						</div>
+						<span>Creada el
+							{{ lista.createdAt|date('d/m/Y') }}</span>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	</div>
+
+	<script>
+		function copiarClave(texto) {
+if (navigator.clipboard && window.isSecureContext) {
+navigator.clipboard.writeText(texto).then(() => mostrarMensajeCopiado()).catch(() => fallback(texto));
+} else {
+fallback(texto);
+}
+}
+
+function fallback(texto) {
+const input = document.createElement('input');
+input.value = texto;
+document.body.appendChild(input);
+input.select();
+input.setSelectionRange(0, 99999); // iOS
+document.execCommand('copy');
+document.body.removeChild(input);
+mostrarMensajeCopiado();
+}
+
+function mostrarMensajeCopiado() {
+const mensaje = document.getElementById('mensaje-copiado');
+mensaje.style.visibility = 'visible';
+mensaje.style.opacity = '1';
+
+setTimeout(() => {
+mensaje.style.opacity = '0';
+mensaje.style.visibility = 'hidden';
+}, 2000);
+}
+	</script>
+
+{% endblock %}
