@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -8,6 +7,12 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> symfony/dotenv ###
+# Ignora entornos reales y permite un ejemplo
+.env
+!.env.example
+###< symfony/dotenv ###
 
 ###> phpunit/phpunit ###
 /phpunit.xml
@@ -23,3 +28,9 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Archivos del sistema (macOS, VSCode, etc.)
+.DS_Store
+.idea/
+*.iml
+.vscode/
