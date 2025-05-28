@@ -13,8 +13,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class GrupoController extends AbstractController
 {
     #[Route('/grupos', name: 'app_grupos')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$request->query->get('recargar')) {
+            // Forzamos recarga completa para evitar errores con el click en las cards
+            return $this->redirectConRecarga($this->generateUrl('app_grupos', ['recargar' => 1]));
+        }
+
         $usuario = $this->getUser();
 
         $gruposCreados = $entityManager->getRepository(Grupo::class)->findBy(
@@ -156,5 +161,12 @@ class GrupoController extends AbstractController
         }
 
         return $this->redirectToRoute('app_grupos');
+    }
+    private function redirectConRecarga(string $ruta): Response
+    {
+        return new Response(
+            '<html><head><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($ruta) . '"></head><body></body></html>',
+            302
+        );
     }
 }

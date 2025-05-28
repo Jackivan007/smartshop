@@ -38,25 +38,18 @@ class PerfilController extends AbstractController
         $formEditar = $this->createForm(PerfilType::class, $usuario);
         $formEditar->handleRequest($request);
 
-        if ($formEditar->isSubmitted() && $formEditar->isValid()) {
-            $emailIntroducido = $formEditar->get('email')->getData();
+        if ($formEditar->isSubmitted()) {
             $usernameIntroducido = $formEditar->get('username')->getData();
-
-            $emailExistente = $em->getRepository(Usuario::class)->findOneBy(['email' => $emailIntroducido]);
             $userExistente = $em->getRepository(Usuario::class)->findOneBy(['username' => $usernameIntroducido]);
 
-            if ($emailExistente && $emailExistente !== $usuario) {
-                $formEditar->get('email')->addError(new FormError('Ya existe una cuenta con este correo electrónico.'));
-            }
-
             if ($userExistente && $userExistente !== $usuario) {
-                $formEditar->get('username')->addError(new FormError('Ya existe una cuenta con este nombre de usuario.'));
-            }
+                $this->addFlash('error', 'Ya existe una cuenta con ese nombre de usuario.');
+                $usuario->setUsername($usuarioOriginal->getUsername());
 
-            if ($formEditar->isValid()) {
+                return $this->redirectToRoute('app_perfil');
+            } elseif ($formEditar->isValid()) {
                 $em->flush();
 
-                // Reautenticar si cambia el identificador principal
                 if ($usuarioOriginal->getUserIdentifier() !== $usuario->getUserIdentifier()) {
                     $token = new UsernamePasswordToken($usuario, 'main', $usuario->getRoles());
                     $this->container->get('security.token_storage')->setToken($token);

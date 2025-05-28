@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class GrupoType extends AbstractType
 {
@@ -15,6 +16,15 @@ class GrupoType extends AbstractType
         $builder
             ->add('nombre', TextType::class, [
                 'label' => 'Nombre del grupo',
+                'attr' => [
+                    'maxlength' => 25,
+                ],
+                'constraints' => [
+                    new Length([
+                        'max' => 25,
+                        'maxMessage' => 'El nombre no puede tener más de {{ limit }} caracteres.',
+                    ]),
+                ],
             ]);
     }
 

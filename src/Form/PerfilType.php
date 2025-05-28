@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
 
 class PerfilType extends AbstractType
 {
@@ -18,28 +19,40 @@ class PerfilType extends AbstractType
             ->add('nombre', TextType::class, [
                 'label' => 'Nombre',
                 'constraints' => [
-                    new NotBlank(['message' => 'El nombre no puede estar vacío.'])
+                    new NotBlank(['message' => 'El nombre no puede estar vacío.']),
+                    new Length([
+                        'max' => 30,
+                        'maxMessage' => 'El nombre no puede tener más de {{ limit }} caracteres.'
+                    ])
                 ],
                 'attr' => [
-                    'required' => true
+                    'maxlength' => 30
                 ]
             ])
             ->add('apellidos', TextType::class, [
                 'label' => 'Apellidos',
                 'constraints' => [
-                    new NotBlank(['message' => 'Los apellidos no pueden estar vacíos.'])
+                    new NotBlank(['message' => 'Los apellidos no pueden estar vacíos.']),
+                    new Length([
+                        'max' => 40,
+                        'maxMessage' => 'Los apellidos no pueden tener más de {{ limit }} caracteres.'
+                    ])
                 ],
                 'attr' => [
-                    'required' => true
+                    'maxlength' => 40
                 ]
             ])
             ->add('username', TextType::class, [
                 'label' => 'Nombre de usuario',
                 'constraints' => [
-                    new NotBlank(['message' => 'El nombre de usuario no puede estar vacío.'])
+                    new NotBlank(['message' => 'El nombre de usuario no puede estar vacío.']),
+                    new Length([
+                        'max' => 20,
+                        'maxMessage' => 'El nombre de usuario no puede tener más de {{ limit }} caracteres.'
+                    ])
                 ],
                 'attr' => [
-                    'required' => true
+                    'maxlength' => 20
                 ]
             ])
             ->add('email', EmailType::class, [

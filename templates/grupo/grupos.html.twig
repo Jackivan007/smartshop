@@ -15,11 +15,9 @@
 		{% if gruposCreados is empty and gruposUnido is empty %}
 			<p>No perteneces a ningún grupo todavía.</p>
 		{% else %}
-			<div
-				class="grupo-grid">
-				{# Primero grupos creados #}
+			<div class="grupo-grid">
 				{% for grupo in gruposCreados %}
-					<div class="grupo-card grupo-card-link" onclick="window.location.href='{{ path('app_listas', { grupoId: grupo.id }) }}'">
+					<div class="grupo-card grupo-card-link" data-url="{{ path('app_listas', { grupoId: grupo.id }) }}">
 						<div class="card-header">
 							<strong>{{ grupo.nombre }}</strong>
 							<div class="card-botones">
@@ -39,9 +37,8 @@
 					</div>
 				{% endfor %}
 
-				{# Luego grupos unidos #}
 				{% for grupo in gruposUnido %}
-					<div class="grupo-card grupo-card-link" onclick="window.location.href='{{ path('app_listas', { grupoId: grupo.id }) }}'">
+					<div class="grupo-card grupo-card-link" data-url="{{ path('app_listas', { grupoId: grupo.id }) }}">
 						<div class="card-header">
 							<strong>{{ grupo.nombre }}</strong>
 							<form method="post" action="{{ path('app_grupo_abandonar', { id: grupo.id }) }}" onsubmit="event.stopPropagation(); return confirm('¿Seguro que quieres abandonar este grupo?');">
@@ -58,4 +55,24 @@
 			</div>
 		{% endif %}
 	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+const cards = document.querySelectorAll('.grupo-card-link');
+
+cards.forEach(card => {
+card.addEventListener('click', function (e) { // Si haces clic en botón, enlace o dentro de un formulario, no navegues
+if (e.target.closest('button') || e.target.closest('a') || e.target.closest('form')) {
+return; // no hacemos nada
+}
+
+// En cualquier otro caso, redirige
+const url = card.dataset.url;
+if (url) {
+window.location.href = url;
+}
+});
+});
+});
+	</script>
+
 {% endblock %}

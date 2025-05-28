@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ListaController extends AbstractController
 {
     #[Route('/grupos/{grupoId}/listas', name: 'app_listas')]
-    public function index(int $grupoId, GrupoRepository $grupoRepo, ListaRepository $listaRepo): Response
+    public function index(int $grupoId, GrupoRepository $grupoRepo, ListaRepository $listaRepo, Request $request): Response
     {
         $grupo = $grupoRepo->find($grupoId);
 
@@ -29,6 +29,11 @@ class ListaController extends AbstractController
 
         if (!$grupo->getMiembros()->contains($this->getUser())) {
             return $this->redirectToRoute('app_grupos');
+        }
+
+        // Si NO hay query string ?_recarga=1, redirige con recarga forzada
+        if (!$request->query->getBoolean('_recarga')) {
+            return $this->redirectConRecarga('app_listas', ['grupoId' => $grupoId, '_recarga' => 1]);
         }
 
         $listas = $listaRepo->findBy(['grupo' => $grupo], ['createdAt' => 'DESC']);
@@ -140,5 +145,15 @@ class ListaController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('app_listas', ['grupoId' => $grupoId]);
+    }
+
+    private function redirectConRecarga(string $ruta, array $parametros = []): Response
+    {
+        $url = $this->generateUrl($ruta, $parametros);
+
+        return new Response(
+            '<html><head><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($url) . '"></head><body></body></html>',
+            302
+        );
     }
 }

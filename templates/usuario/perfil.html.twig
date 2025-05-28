@@ -19,9 +19,6 @@
 			class="perfil-columns">
 			{# Sección edición de perfil #}
 			<div class="perfil-section">
-				{% for error in formEditar.vars.errors %}
-					<div class="alert-danger">{{ error.message }}</div>
-				{% endfor %}
 
 				{{ form_start(formEditar) }}
 				<div class="form-group">{{ form_row(formEditar.nombre) }}</div>
@@ -35,10 +32,6 @@
 			{# Sección cambiar contraseña #}
 			<div class="perfil-section">
 				<h2 class="section-title">Cambiar contraseña</h2>
-
-				{% for error in formPassword.vars.errors %}
-					<div class="alert-danger">{{ error.message }}</div>
-				{% endfor %}
 
 				{{ form_start(formPassword) }}
 				<div class="form-group">{{ form_row(formPassword.currentPassword, { label: 'Contraseña actual' }) }}</div>

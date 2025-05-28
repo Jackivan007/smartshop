@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ lista.nombre }}
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">{{ lista.nombre }}</h1>
+
+		<div class="acciones-superiores">
+			<a href="{{ path('app_item_nuevo', { listaId: lista.id }) }}" class="btn" style="padding: 8px 14px; font-size: 0.95rem;">Añadir</a>
+			<form method="post" action="{{ path('app_item_desmarcar_todos', { listaId: lista.id }) }}" onsubmit="return confirm('¿Desmarcar todos los elementos?');">
+				<button type="submit" class="btn-secondary" style="padding: 10px 22px; font-size: 1rem; white-space: nowrap;">Desmarcar todos</button>
+			</form>
+		</div>
+
+		<div class="login-link mt-1-5rem" style="margin-bottom: 1.5rem;">
+			<a href="{{ path('app_listas', { grupoId: lista.grupo.id }) }}">← Volver al grupo</a>
+		</div>
+
+		{# Filtros de búsqueda #}
+		<div class="filtros-items" style="flex-direction: column; gap: 0.8rem;">
+			<input type="text" id="filtroNombre" placeholder="Buscar por nombre..." class="input-filtro">
+
+			<div style="display: flex; gap: 1rem;">
+				<select id="filtroCategoria" class="input-filtro" style="flex: 1;">
+					<option value="">Todas las categorías</option>
+					{% for categoria in categorias %}
+						<option value="{{ categoria|lower }}">{{ categoria }}</option>
+					{% endfor %}
+				</select>
+
+				<select id="filtroEstado" class="input-filtro" style="flex: 1;">
+					<option value="">Todos</option>
+					<option value="comprado">Realizados</option>
+					<option value="pendiente">Pendientes</option>
+				</select>
+			</div>
+
+			<div>
+				<button type="button" class="btn-secondary" onclick="limpiarFiltros()">Limpiar filtros</button>
+			</div>
+		</div>
+
+		{% if items is empty %}
+			<p>No hay items en esta lista todavía.</p>
+		{% else %}
+			<div class="tabla-scroll">
+				<table class="tabla-items" id="tablaItems">
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>Categoría</th>
+							<th class="centrado">Cantidad</th>
+							<th class="centrado">Realizado</th>
+							<th class="centrado">Nota</th>
+							<th>Editar</th>
+							<th class="centrado">Eliminar</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for item in items %}
+							<tr class="item-row {{ item.comprado ? 'comprado' : '' }}" data-nombre="{{ item.nombre|lower }}" data-categoria="{{ item.categoria.nombre|lower }}" data-estado="{{ item.comprado ? 'comprado' : 'pendiente' }}">
+								<td>{{ item.nombre }}</td>
+								<td>{{ item.categoria.nombre }}</td>
+								<td class="centrado">{{ item.cantidad }}</td>
+								<td class="centrado">
+									<input type="checkbox" class="check-comprado" data-id="{{ item.id }}" {% if item.comprado %} checked {% endif %}>
+								</td>
+								<td class="centrado col-nota">
+									{% if item.nota %}
+										<div class="nota-pop-wrapper">
+											<button type="button" class="btn-nota" onclick="mostrarNota(this)">
+												<i class="fa-solid fa-lightbulb"></i>
+											</button>
+											<div class="nota-pop-contenido">{{ item.nota }}</div>
+										</div>
+									{% else %}
+										<div class="nota-pop-wrapper">–</div>
+									{% endif %}
+								</td>
+								<td class="centrado">
+									<a href="{{ path('app_item_editar', { id: item.id }) }}" class="btn-icon editar" title="Editar">
+										<i class="fa-solid fa-pen"></i>
+									</a>
+								</td>
+								<td class="centrado">
+									<form method="post" action="{{ path('app_item_eliminar', { id: item.id, listaId: lista.id }) }}" onsubmit="return confirm('¿Eliminar este elemento?');">
+										<input type="hidden" name="_token" value="{{ csrf_token('eliminar_item_' ~ item.id) }}">
+										<button type="submit" class="btn-icon eliminar" title="Eliminar">
+											<i class="fa-solid fa-trash"></i>
+										</button>
+									</form>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+			<p class="mensaje-sin-resultados">No hay resultados que coincidan con el filtro.</p>
+		{% endif %}
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const inputNombre = document.getElementById('filtroNombre');
+const selectCategoria = document.getElementById('filtroCategoria');
+const selectEstado = document.getElementById('filtroEstado');
+const mensajeVacio = document.querySelector('.mensaje-sin-resultados');
+
+// Si los filtros no están cargados correctamente, se recarga la página
+if (! inputNombre || ! selectCategoria || ! selectEstado) {
+console.warn('Filtros no cargados correctamente. Recargando...');
+setTimeout(() => location.reload(), 100);
+return;
+}
+
+function filtrarItems() {
+const nombre = inputNombre.value.toLowerCase();
+const categoria = selectCategoria.value.toLowerCase();
+const estado = selectEstado.value;
+let hayCoincidencias = false;
+
+document.querySelectorAll('.item-row').forEach(fila => {
+const nombreFila = fila.dataset.nombre;
+const categoriaFila = fila.dataset.categoria;
+const estadoFila = fila.dataset.estado;
+
+const coincideNombre = nombre === '' || nombreFila.includes(nombre);
+const coincideCategoria = categoria === '' || categoriaFila === categoria;
+const coincideEstado = estado === '' || estadoFila === estado;
+
+const mostrar = coincideNombre && coincideCategoria && coincideEstado;
+fila.style.display = mostrar ? '' : 'none';
+if (mostrar) 
+hayCoincidencias = true;
+
+});
+
+mensajeVacio.style.display = hayCoincidencias ? 'none' : 'block';
+}
+
+function limpiarFiltros() {
+inputNombre.value = '';
+selectCategoria.value = '';
+selectEstado.value = '';
+filtrarItems();
+}
+
+window.limpiarFiltros = limpiarFiltros;
+
+// Eventos de filtros
+inputNombre.addEventListener('input', filtrarItems);
+selectCategoria.addEventListener('change', filtrarItems);
+selectEstado.addEventListener('change', filtrarItems);
+
+// Eventos de checkboxes
+document.querySelectorAll('.check-comprado').forEach(checkbox => {
+checkbox.addEventListener('change', function () {
+const fila = this.closest('tr');
+const id = this.dataset.id;
+const comprado = this.checked;
+
+fila.classList.toggle('comprado', comprado);
+fila.dataset.estado = comprado ? 'comprado' : 'pendiente';
+
+fetch (`/items/${id}/toggle`, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: JSON.stringify({comprado})
+}).catch(error => {
+console.error('Error al actualizar el estado del item:', error);
+});
+
+filtrarItems();
+});
+});
+
+// Mostrar/ocultar nota
+window.mostrarNota = function (boton) {
+const wrapper = boton.closest('.nota-pop-wrapper');
+
+document.querySelectorAll('.nota-pop-wrapper.mostrar').forEach(el => {
+if (el !== wrapper) {
+el.classList.remove('mostrar');
+el.querySelector('.btn-nota') ?. classList.remove('activa');
+}
+});
+
+wrapper.classList.toggle('mostrar');
+boton.classList.toggle('activa');
+};
+
+document.addEventListener('click', function (e) {
+if (! e.target.closest('.nota-pop-wrapper')) {
+document.querySelectorAll('.nota-pop-wrapper.mostrar').forEach(el => {
+el.classList.remove('mostrar');
+el.querySelector('.btn-nota') ?. classList.remove('activa');
+});
+}
+});
+
+// Ejecutar filtros al cargar
+filtrarItems();
+});
+	</script>
+
+{% endblock %}

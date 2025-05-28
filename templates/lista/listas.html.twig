@@ -49,7 +49,7 @@
 		{% else %}
 			<div class="grupo-grid">
 				{% for lista in listas %}
-					<div class="grupo-card">
+					<div class="grupo-card grupo-card-link" data-url="{{ path('app_items', { listaId: lista.id }) }}">
 						<div class="card-header">
 							<strong>{{ lista.nombre }}</strong>
 							<div class="card-botones">
@@ -58,7 +58,7 @@
 								</a>
 								<form method="post" action="{{ path('app_lista_eliminar', { id: lista.id }) }}" onsubmit="event.stopPropagation(); return confirm('¿Seguro que quieres eliminar esta lista?');">
 									<input type="hidden" name="_token" value="{{ csrf_token('eliminar_lista_' ~ lista.id) }}">
-									<button type="submit" class="btn-icon eliminar">
+									<button type="submit" class="btn-icon eliminar" onclick="event.stopPropagation();">
 										<i class="fa-solid fa-trash"></i>
 									</button>
 								</form>
@@ -102,6 +102,18 @@ mensaje.style.opacity = '0';
 mensaje.style.visibility = 'hidden';
 }, 2000);
 }
+document.addEventListener('DOMContentLoaded', () => {
+document.querySelectorAll('.grupo-card-link').forEach(card => {
+card.addEventListener('click', (e) => { // Ignorar clicks en formularios, botones o enlaces dentro del card
+if (e.target.closest('a') || e.target.closest('form') || e.target.closest('button')) 
+return;
+
+
+
+window.location.href = card.dataset.url;
+});
+});
+});
 	</script>
 
 {% endblock %}

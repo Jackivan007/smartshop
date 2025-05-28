@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Añadir
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1 class="form-title">Añadir</h1>
+
+		{{ form_start(form) }}
+
+		<div class="form-group">
+			{{ form_row(form.nombre) }}
+
+			<div style="display: flex; gap: 1rem;">
+				<div style="flex: 1;">
+					{{ form_row(form.cantidad) }}
+				</div>
+				<div style="flex: 1;">
+					{{ form_row(form.categoria) }}
+				</div>
+			</div>
+
+			{{ form_row(form.nota) }}
+		</div>
+
+		<button class="btn">Añadir</button>
+		{{ form_end(form) }}
+
+		<div class="login-link mt-1-5rem">
+			<a href="#" onclick="event.preventDefault(); window.location.href='{{ path('app_items', { listaId: lista.id }) }}';">← Volver a la lista</a>
+		</div>
+	</div>
+{% endblock %}

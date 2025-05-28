@@ -69,7 +69,7 @@ body {
 /* Iconos del header */
 .fa-icon {
     font-size: 22px;
-    color: #2D2A26;
+    color: #706C9A;
     cursor: pointer;
     transition: color 0.2s ease;
 }
@@ -123,7 +123,7 @@ body {
 
 /* Icono copiar */
 .btn-icon.copiar i {
-    color: #2D2A26;
+    color: #706C9A;
 }
 
 .btn-icon.copiar:hover i {
@@ -140,7 +140,8 @@ body {
 /* Contenedor de los botones dentro de la tarjeta */
 .card-botones {
     display: flex;
-    gap: 0.6rem;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 /* Containers */
@@ -258,18 +259,6 @@ input:focus {
 
 .btn-secondary:hover {
     background-color: #5A547A;
-}
-
-.btn-editar {
-    background-color: #00B140;
-    color: white;
-    padding: 8px 12px;
-    font-size: 0.95rem;
-    border-radius: 6px;
-}
-
-.btn-editar:hover {
-    background-color: #009336;
 }
 
 .btn-eliminar {
@@ -541,7 +530,7 @@ form {
     border-radius: 6px;
 }
 
-/* Caja que agrupa clave y miembros (en fila) */
+/* Caja que agrupa clave y miembros*/
 .grupo-info-row {
     display: flex;
     justify-content: space-between;
@@ -549,6 +538,213 @@ form {
     flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 1.5rem;
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+    max-height: 400px;
+    border-radius: 8px;
+    border: 1px solid #D3D7D4;
+}
+
+.tabla-items {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.tabla-items thead,
+.tabla-items tbody,
+.tabla-items tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.tabla-items th,
+.tabla-items td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.tabla-items thead th {
+    position: sticky;
+    top: 0;
+    background-color: #E4ECE7;
+    z-index: 1;
+}
+
+.tabla-items tbody {
+    display: block;
+    max-height: calc(4 * 60px);
+    overflow-y: auto;
+}
+
+.tabla-items tbody tr {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.celda-nota {
+    max-width: 200px;
+    font-size: 0.85rem;
+    color: #2D2A26;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Si está marcado como realizado */
+tr.comprado {
+    background-color: #F3F3F3;
+    text-decoration: line-through;
+    color: #6F726F;
+}
+
+.input-filtro {
+    padding: 10px;
+    border: 1px solid #D3D7D4;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    min-width: 160px;
+    background-color: #FDFDFC;
+    color: #2D2A26;
+    transition: border 0.2s ease;
+}
+
+.input-filtro:focus {
+    border-color: #00B140;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 177, 64, 0.2);
+}
+
+.filtros-items {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+/* Hover en las filas de productos */
+.tabla-items tbody tr:hover {
+    background-color: #F2F2F2;
+    transition: background-color 0.2s ease;
+}
+
+/* Animación del checkbox al marcar/desmarcar */
+.check-comprado {
+    transform: scale(1);
+    transition: transform 0.2s ease;
+}
+
+.check-comprado:checked {
+    accent-color: #00B140;
+    transform: scale(1.15);
+}
+
+.input-filtro::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Mejora visual del scroll horizontal de la tabla */
+.tabla-scroll {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Mensaje cuando no hay resultados al filtrar (lo activas vía JS) */
+.mensaje-sin-resultados {
+    display: none;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1rem;
+    color: #A0A0A0;
+}
+
+.nota-pop-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-nota {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #706C9A;
+    font-size: 1.1rem;
+    padding: 0;
+}
+
+.btn-nota:hover {
+    color: #5A547A;
+}
+
+.nota-pop-contenido {
+    display: none;
+    position: absolute;
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    font-size: 0.85rem;
+    max-width: 220px;
+    z-index: 20;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nota-pop-wrapper.mostrar .nota-pop-contenido {
+    display: block;
+}
+
+.btn-nota.activa i {
+    color: #FFD700;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.col-nota {
+    width: 60px;
+    max-width: 60px;
+}
+
+.centrado {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.tabla-items td.centrado,
+.tabla-items th.centrado {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabla-items td.centrado form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.tabla-items td.centrado form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.btn-icon.eliminar {
+    padding: 0;
+    margin: 0;
 }
 
 /* Responsive */
@@ -587,6 +783,96 @@ form {
         margin-top: 1rem;
     }
 }
+
+td i.fa-note-sticky {
+    color: #706C9A;
+    font-size: 1.1rem;
+    cursor: help;
+}
+
+td i.fa-note-sticky:hover {
+    color: #5A547A;
+}
+
+.nota-tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.nota-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    font-size: 0.8rem;
+    z-index: 10;
+    transition: opacity 0.3s;
+    width: max-content;
+    max-width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nota-tooltip-wrapper:active .nota-tooltip,
+.nota-tooltip-wrapper:focus-within .nota-tooltip,
+.nota-tooltip-wrapper:hover .nota-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    border: 1px solid #D3D7D4;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 0.5rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #00B140;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 177, 64, 0.2);
+}
+
+textarea {
+    resize: vertical;
+    max-height: 120px;
+    min-height: 60px;
+    margin-bottom: 0.5rem;
+}
+
+select {
+    background-color: #FDFDFC;
+    color: #2D2A26;
+    border: 1px solid #D3D7D4;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    padding: 10px;
+    width: 100%;
+    transition: border 0.2s ease;
+}
+
+select:focus {
+    border-color: #00B140;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 177, 64, 0.2);
+}
+
 
 @media (max-width: 480px) {
     body {
@@ -638,5 +924,30 @@ form {
 
     .mensaje-copiado {
         font-size: 0.8rem;
+    }
+
+    .tabla-scroll {
+        max-height: 300px;
+        overflow-x: auto;
+    }
+
+    .tabla-items th,
+    .tabla-items td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .celda-nota {
+        max-width: 140px;
+        font-size: 0.75rem;
+    }
+
+    .tabla-items {
+        min-width: 650px;
+    }
+
+    .form-container select,
+    .form-container input[type="number"] {
+        height: 42px;
     }
 }
