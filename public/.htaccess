@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Si el archivo o directorio existe, se sirve directamente
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Si no existe, Symfony se encarga de la petición vía index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Opcional: evitar que se puedan listar directorios
+Options -Indexes
+
+# Opcional: proteger archivos sensibles
+<FilesMatch "\.(env|json|lock|xml|yml|yaml|twig|ini|md|txt|dist)$">
+    Require all denied
+</FilesMatch>
